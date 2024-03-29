@@ -11,7 +11,10 @@ export class TeachersService {
 
   async createTeacher(createTeacherDto: CreateTeacherDto, res: Response) {
     const teacher = await this.teacherRepo.create(createTeacherDto);
-    return teacher;
+    return {
+      message: "O'qituvchi qo'shildi",
+      teacher: teacher
+    };
   }
 
   async getAllTeacher() {
@@ -25,12 +28,20 @@ export class TeachersService {
   }
 
   async delOneTeacher(id: number) {
-    return this.teacherRepo.destroy({ where: { id } });
+    this.teacherRepo.destroy({ where: { id } });
+    return {
+      message: "O'qituvchi o'chirildi"
+    }
   }
 
   async updateTeacher(id: number, updateTeacherDto: UpdateTeacherDto) {
     const teacher = await this.teacherRepo.update(updateTeacherDto, {
       where: { id },
     });
+
+    return {
+      message: "O'qtuvchi o'zgartirildi",
+      teacher: teacher
+    }
   }
 }

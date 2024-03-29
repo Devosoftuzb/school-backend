@@ -12,8 +12,4 @@ export class CreateNewDto {
     @IsNotEmpty()
     body: string;
 
-    @ApiProperty({example: "25.03.2024", description: "Yangilik qo'shilgan sana"})
-    @IsString()
-    create_date: string;
-
 }

@@ -3,7 +3,6 @@ import { Column, DataType, Model, Table } from "sequelize-typescript";
 interface NewAttr {
     title: string;
     body: string;
-    create_date: string;
 }
 
 @Table({tableName: "news"})
@@ -24,9 +23,4 @@ export class New extends Model<New, NewAttr> {
         type: DataType.STRING,
     })
     body: string;
-
-    @Column({
-        type: DataType.STRING,
-    })
-    create_date: string;
 }

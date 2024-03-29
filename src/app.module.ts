@@ -11,6 +11,7 @@ import { AdditionalLessonsModule } from './additional-lessons/additional-lessons
 import { New } from './news/models/new.model';
 import { Partnership } from './partnerships/models/partnerships.model';
 import { Lesson } from './additional-lessons/models/lesson.model';
+import { FilesModule } from './files/files.module';
 
 
 
@@ -33,6 +34,7 @@ import { Lesson } from './additional-lessons/models/lesson.model';
     NewsModule,
     PartnershipsModule,
     AdditionalLessonsModule,
+    FilesModule,
   ],
   controllers: [],
   providers: [],

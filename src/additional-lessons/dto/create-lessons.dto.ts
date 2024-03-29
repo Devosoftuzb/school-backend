@@ -9,7 +9,6 @@ export class CreateLessonDto {
 
     @ApiProperty({example: "Rasm", description: "To'graklar rasmi"})
     @IsString()
-    @IsNotEmpty()
     image: string;
 
     @ApiProperty({example: "Hafta va kunlar", description: "To'garaklar hafta va kunlari"})

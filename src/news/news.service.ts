@@ -11,7 +11,10 @@ export class NewsService {
 
   async createNew(createNewDto: CreateNewDto, res: Response) {
     const news = await this.newRepo.create(createNewDto);
-    return news;
+    return {
+      message: "Yangilik qo'shildi",
+      new: news
+    };
   }
 
   async getAllNew() {
@@ -25,12 +28,20 @@ export class NewsService {
   }
 
   async delOneNew(id: number) {
-    return this.newRepo.destroy({ where: { id } });
+    this.newRepo.destroy({ where: { id } });
+    return {
+      message: "Yangilik o'chirildi"
+    };
   }
 
   async updateNew(id: number, updateNewDto: UpdateNewDto) {
     const news = await this.newRepo.update(updateNewDto, {
       where: { id },
     });
+
+    return {
+      message: "Yangilik o'zgartirildi",
+      new: news
+    };
   }
 }
