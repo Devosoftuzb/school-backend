@@ -23,7 +23,7 @@ import { FilesModule } from './files/files.module';
       host: process.env.POSTGRES_HOST,
       port: Number(process.env.POSTGRES_PORT),
       username: process.env.POSTGRES_USER,
-      password: String(process.env.POSTGRES_PASSWORD),
+      password: String(process.env.POSTGRES_PASS),
       database: process.env.POSTGRES_DB,
       models: [Admin, Teacher, New, Partnership, Lesson],
       autoLoadModels: true,
