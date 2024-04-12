@@ -11,5 +11,4 @@ export class CreateNewDto {
     @IsString()
     @IsNotEmpty()
     body: string;
-
 }

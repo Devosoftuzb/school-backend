@@ -1,6 +1,8 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { SequelizeModule } from '@nestjs/sequelize';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { resolve } from 'path';
 import { AdminsModule } from './admins/admins.module';
 import { Admin } from './admins/models/admin.model';
 import { TeachersModule } from './teachers/teachers.module';
@@ -12,6 +14,8 @@ import { New } from './news/models/new.model';
 import { Partnership } from './partnerships/models/partnerships.model';
 import { Lesson } from './additional-lessons/models/lesson.model';
 import { FilesModule } from './files/files.module';
+import { ContactModule } from './contact/contact.module';
+import { Contact } from './contact/models/contact.model';
 
 
 
@@ -25,16 +29,20 @@ import { FilesModule } from './files/files.module';
       username: process.env.POSTGRES_USER,
       password: String(process.env.POSTGRES_PASS),
       database: process.env.POSTGRES_DB,
-      models: [Admin, Teacher, New, Partnership, Lesson],
+      models: [Admin, Teacher, New, Partnership, Lesson, Contact],
       autoLoadModels: true,
       logging: false,
+    }),
+    ServeStaticModule.forRoot({
+      rootPath: resolve(__dirname, 'static'),
     }),
     AdminsModule,
     TeachersModule,
     NewsModule,
     PartnershipsModule,
-    AdditionalLessonsModule,
+    AdditionalLessonsModule,  
     FilesModule,
+    ContactModule,
   ],
   controllers: [],
   providers: [],

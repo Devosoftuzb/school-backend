@@ -36,7 +36,7 @@ export class AdminsService {
     const tokens = await this.getTokens(
       newConfirAdmin
     )
-
+    
     const hashed_refresh_token = await bcrypt.hash(tokens.refresh_token, 7);
     
     const updatedAdmin = await this.adminRepo.update({

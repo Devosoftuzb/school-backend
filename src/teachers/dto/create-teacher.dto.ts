@@ -1,5 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsNotEmpty, IsString } from "class-validator";
+import { IsBoolean, IsNotEmpty, IsString } from "class-validator";
 
 export class CreateTeacherDto {
     @ApiProperty({example: "John Doe", description: "O'qituvchini to'liq ismi"})
@@ -21,5 +21,9 @@ export class CreateTeacherDto {
     @IsString()
     @IsNotEmpty()
     number: string;
+
+    @ApiProperty({example: "true or false", description: "O'qituvchi yoki Direktirni aniqlash"})
+    @IsNotEmpty()
+    status: boolean;
 
 }

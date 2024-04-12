@@ -1,6 +1,5 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
-import { Response } from 'express';
 import { CreateLessonDto } from './dto/create-lessons.dto';
 import { UpdateLessonDto } from './dto/update-lessons.dto';
 import { Lesson } from './models/lesson.model';
@@ -13,8 +12,7 @@ export class AdditionalLessonsService {
     private readonly fileService: FilesService,
   ) {}
 
-  async createLesson(createLessonDto: CreateLessonDto, res: Response) {
-    const { image } = createLessonDto;
+  async createLesson(createLessonDto: CreateLessonDto, image: any) {
     if (image) {
       let image_name: string;
       try {
@@ -50,39 +48,42 @@ export class AdditionalLessonsService {
   }
 
   async delOneLesson(id: number) {
+    let lesson = await this.lessonRepo.findOne({ where: { id } });
     this.lessonRepo.destroy({ where: { id } });
-
+    await this.fileService.deleteFile(lesson.image);
     return {
       message: "To'garak o'chirildi",
     };
   }
 
-  async updateLesson(id: number, updateLessonDto: UpdateLessonDto) {
-    const lesson = await this.lessonRepo.findOne({ where: { id } });
-    const { image } = updateLessonDto;
+  async updateLesson(id: number, updateLessonDto: UpdateLessonDto, image: any) {
     if (image) {
       let image_name: string;
+      let oldLessonImage = await this.lessonRepo.findOne({ where: { id } });
       try {
+        await this.fileService.deleteFile(oldLessonImage.image);
         image_name = await this.fileService.createFile(image);
       } catch (error) {
         throw new BadRequestException(error.message);
       }
-      const lesson_updated = await this.lessonRepo.update(
-        { image: image_name, ...updateLessonDto },
-        { where: { id: lesson.id }, returning: true },
+      const lesson = await this.lessonRepo.update(
+        {
+          image: image_name,
+          ...updateLessonDto,
+        },
+        { where: { id } },
       );
       return {
-        message: "To'garak tahrirlandi",
-        lesson: lesson_updated[1][0],
+        message: "To'garak o'zgartirildi",
+        lesson: lesson,
       };
     }
-    const updated_lesson = await this.lessonRepo.update(updateLessonDto, {
-      where: { id: lesson.id },
-      returning: true,
+    const lesson = await this.lessonRepo.update(updateLessonDto, {
+      where: { id },
     });
     return {
-      message: "To'garak tahrirlandi",
-      lesson: updated_lesson[1][0],
+      message: "To'garak o'zgartirildi",
+      lesson: lesson,
     };
   }
 }

@@ -1,5 +1,5 @@
-import { Controller, Get, Post, Body, Param, Delete, Res, UseGuards, Put } from '@nestjs/common';
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { Controller, Get, Post, Body, Param, Delete, Res, UseGuards, Put, UseInterceptors, UploadedFile } from '@nestjs/common';
+import { ApiBody, ApiConsumes, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { Response } from 'express';
 import { Roles } from '../decorators/roles-auth-decorator';
 import { RolesGuard } from '../guards/roles.guard';
@@ -7,6 +7,8 @@ import { NewsService } from './news.service';
 import { CreateNewDto } from './dto/create-new.dto';
 import { UpdateNewDto } from './dto/update-new.dto';
 import { New } from './models/new.model';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { ImageValidationPipe } from 'src/pipes/image-validation.pipe';
 
 
 @ApiTags("Yangiliklar")
@@ -17,9 +19,25 @@ export class NewsController {
   @ApiOperation({ summary: "Yangilik qo'shish" })
   @Roles("ADMIN")
   @UseGuards(RolesGuard)
-  @Post('create')
-  async create(@Body() createNewDto: CreateNewDto, @Res({ passthrough: true }) res: Response) {
-    return this.newsService.createNew(createNewDto, res);
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        image: {
+          type: 'string',
+          format: 'binary',
+        },
+      },
+    },
+  })
+  @Post('/create')
+  @UseInterceptors(FileInterceptor('image'))
+  async create(
+    @Body() createNewDto: CreateNewDto,
+    @UploadedFile(new ImageValidationPipe()) image: Express.Multer.File,
+  ) {
+    return this.newsService.createNew(createNewDto, image);
   }
 
   @ApiOperation({ summary: "Yangilikni ko'rish" }) 
@@ -45,8 +63,25 @@ export class NewsController {
   @ApiOperation({ summary: "Yangilik ID si bo'yicha o'zgartirish" })
   @Roles("ADMIN")
   @UseGuards(RolesGuard)
-  @Put("update/:id")
-  async updateNew(@Param('id') id: string, @Body() updateNewDto: UpdateNewDto) {
-    return this.newsService.updateNew(+id, updateNewDto);
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        image: {
+          type: 'string',
+          format: 'binary',
+        },
+      },
+    },
+  })
+  @Put('update/:id')
+  @UseInterceptors(FileInterceptor('image'))
+  async updateNew(
+    @Param('id') id: string,
+    @Body() updateNewDto: UpdateNewDto,
+    @UploadedFile(new ImageValidationPipe()) image: Express.Multer.File,
+  ) {
+    return this.newsService.updateNew(+id, updateNewDto, image);
   }
 }

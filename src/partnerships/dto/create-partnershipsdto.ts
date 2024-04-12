@@ -6,8 +6,4 @@ export class CreatePartnershipsDto {
     @IsString()
     @IsNotEmpty()
     title: string;
-
-    @ApiProperty({example: "Body", description: "Hamkorlar rasmi"})
-    @IsString()
-    image: string;
 }

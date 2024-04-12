@@ -7,7 +7,7 @@ import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
 
 const start = async () => {
     try {
-        const app = await NestFactory.create(AppModule);
+        const app = await NestFactory.create(AppModule, { cors: true });
         const PORT = process.env.API_PORT || 9999;
 
         app.use(cookieParser());

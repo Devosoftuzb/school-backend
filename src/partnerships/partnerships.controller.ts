@@ -1,5 +1,5 @@
-import { Controller, Get, Post, Body, Param, Delete, Res, UseGuards, Put } from '@nestjs/common';
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { Controller, Get, Post, Body, Param, Delete, Res, UseGuards, Put, UseInterceptors, UploadedFile } from '@nestjs/common';
+import { ApiBody, ApiConsumes, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { Response } from 'express';
 import { Roles } from '../decorators/roles-auth-decorator';
 import { RolesGuard } from '../guards/roles.guard';
@@ -7,6 +7,8 @@ import { PartnershipsService } from './partnerships.service';
 import { UpdatePartnershipsDto } from './dto/update-partnerships.dto';
 import { Partnership } from './models/partnerships.model';
 import { CreatePartnershipsDto } from './dto/create-partnershipsdto';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { ImageValidationPipe } from 'src/pipes/image-validation.pipe';
 
 
 
@@ -18,9 +20,25 @@ export class PartnershipsController {
   @ApiOperation({ summary: "Hamkor qo'shish" })
   @Roles("ADMIN")
   @UseGuards(RolesGuard)
-  @Post('create')
-  async create(@Body() createPartnershipDto: CreatePartnershipsDto, @Res({ passthrough: true }) res: Response) {
-    return this.partnershipService.createPartnership(createPartnershipDto, res);
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        image: {
+          type: 'string',
+          format: 'binary',
+        },
+      },
+    },
+  })
+  @Post('/create')
+  @UseInterceptors(FileInterceptor('image'))
+  async create(
+    @Body() createPartnershipsDto: CreatePartnershipsDto,
+    @UploadedFile(new ImageValidationPipe()) image: Express.Multer.File,
+  ) {
+    return this.partnershipService.createPartnership(createPartnershipsDto, image);
   }
 
   @ApiOperation({ summary: "Hamkorni ko'rish" }) 
@@ -46,8 +64,25 @@ export class PartnershipsController {
   @ApiOperation({ summary: "Hamkor ID si bo'yicha o'zgartirish" })
   @Roles("ADMIN")
   @UseGuards(RolesGuard)
-  @Put("update/:id")
-  async updatePartnership(@Param('id') id: string, @Body() updatePartnershipDto: UpdatePartnershipsDto) {
-    return this.partnershipService.updatePartnership(+id, updatePartnershipDto);
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        image: {
+          type: 'string',
+          format: 'binary',
+        },
+      },
+    },
+  })
+  @Put('update/:id')
+  @UseInterceptors(FileInterceptor('image'))
+  async updatePartnership(
+    @Param('id') id: string,
+    @Body() updatePartnershipsDto: UpdatePartnershipsDto,
+    @UploadedFile(new ImageValidationPipe()) image: Express.Multer.File,
+  ) {
+    return this.partnershipService.updatePartnership(+id, updatePartnershipsDto, image);
   }
 }

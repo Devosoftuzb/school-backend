@@ -1,13 +1,12 @@
 import { Column, DataType, Model, Table } from "sequelize-typescript";
 
-interface NewAttr {
-    title: string;
-    body: string;
-    image: string;
+interface ContactAttr {
+    phone: string;
+    info: string;
 }
 
-@Table({tableName: "news"})
-export class New extends Model<New, NewAttr> {
+@Table({tableName: "contact"})
+export class Contact extends Model<Contact, ContactAttr> {
     @Column({
         type: DataType.INTEGER,
         autoIncrement: true,
@@ -18,15 +17,11 @@ export class New extends Model<New, NewAttr> {
     @Column({
         type: DataType.STRING,
     })
-    title: string;
+    phone: string;
 
     @Column({
         type: DataType.STRING,
     })
-    body: string;
-
-    @Column({
-        type: DataType.STRING,
-    })
-    image: string;
+    info: string;
 }
+

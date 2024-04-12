@@ -1,7 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { v4 } from 'uuid';
 import { resolve, join } from 'path';
-import { existsSync, mkdirSync, writeFileSync } from 'fs';
+import { existsSync, mkdirSync, unlinkSync, writeFileSync } from 'fs';
 
 @Injectable()
 export class FilesService {
@@ -17,6 +17,19 @@ export class FilesService {
     } catch (error) {
       throw new HttpException(
         'Rasmni saqlashda xatolik!',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  async deleteFile(file_name: string) {
+    try {
+      unlinkSync(
+        resolve(__dirname, '..', 'static', file_name),
+      );
+    } catch (error) {
+      throw new HttpException(
+        "Rasmni o'chirishda xatolik!",
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }

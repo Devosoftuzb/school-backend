@@ -13,11 +13,7 @@ export class PartnershipsService {
     private readonly fileService: FilesService,
   ) {}
 
-  async createPartnership(
-    createPartnershipDto: CreatePartnershipsDto,
-    res: Response,
-  ) {
-    const { image } = createPartnershipDto;
+  async createPartnership(createPartnershipsDto: CreatePartnershipsDto, image: any) {
     if (image) {
       let image_name: string;
       try {
@@ -27,14 +23,14 @@ export class PartnershipsService {
       }
       const partnership = await this.partnershipRepo.create({
         image: image_name,
-        ...createPartnershipDto,
+        ...createPartnershipsDto,
       });
       return {
         message: "Hamkor qo'shildi",
         partnership: partnership,
       };
     }
-    const partnership = await this.partnershipRepo.create(createPartnershipDto);
+    const partnership = await this.partnershipRepo.create(createPartnershipsDto);
     return {
       message: "Hamkor qo'shildi",
       partnership: partnership,
@@ -54,8 +50,9 @@ export class PartnershipsService {
   }
 
   async delOnePartnership(id: number) {
-    this.partnershipRepo.destroy({ where: { id } });
-
+    let partnership = await this.partnershipRepo.findOne({ where: { id } });
+    await this.partnershipRepo.destroy({ where: { id } });
+    await this.fileService.deleteFile(partnership.image)
     return {
       message: "Hamkor o'chirildi",
     };
@@ -63,36 +60,36 @@ export class PartnershipsService {
 
   async updatePartnership(
     id: number,
-    updatePartnershipDto: UpdatePartnershipsDto,
+    updatePartnershipsDto: UpdatePartnershipsDto,
+    image: any,
   ) {
-    const partnership = await this.partnershipRepo.findOne({ where: { id } });
-    const { image } = updatePartnershipDto;
     if (image) {
       let image_name: string;
+      let oldPartnershipImage = await this.partnershipRepo.findOne({ where: { id } });
       try {
+        await this.fileService.deleteFile(oldPartnershipImage.image)
         image_name = await this.fileService.createFile(image);
       } catch (error) {
         throw new BadRequestException(error.message);
       }
-      const partnership_updated = await this.partnershipRepo.update(
-        { image: image_name, ...updatePartnershipDto },
-        { where: { id: partnership.id }, returning: true },
+      const partnership = await this.partnershipRepo.update(
+        {
+          image: image_name,
+          ...updatePartnershipsDto,
+        },
+        { where: { id } },
       );
       return {
-        message: 'Hamkor tahrirlandi',
-        partnership: partnership_updated[1][0],
+        message: "Hamkor o'zgartirildi",
+        partnership: partnership,
       };
     }
-    const updated_partnership = await this.partnershipRepo.update(
-      updatePartnershipDto,
-      {
-        where: { id: partnership.id },
-        returning: true,
-      },
-    );
+    const partnership = await this.partnershipRepo.update(updatePartnershipsDto, {
+      where: { id },
+    });
     return {
-      message: 'Hamkor tahrirlandi',
-      partnership: updated_partnership[1][0],
+      message: "Hamkor o'zgartirildi",
+      partnership: partnership,
     };
   }
 }
