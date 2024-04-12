@@ -52,7 +52,9 @@ export class PartnershipsService {
   async delOnePartnership(id: number) {
     let partnership = await this.partnershipRepo.findOne({ where: { id } });
     await this.partnershipRepo.destroy({ where: { id } });
-    await this.fileService.deleteFile(partnership.image)
+    if (partnership.image !== 'null'){
+      await this.fileService.deleteFile(partnership.image)
+    }
     return {
       message: "Hamkor o'chirildi",
     };
@@ -67,7 +69,9 @@ export class PartnershipsService {
       let image_name: string;
       let oldPartnershipImage = await this.partnershipRepo.findOne({ where: { id } });
       try {
-        await this.fileService.deleteFile(oldPartnershipImage.image)
+        if (oldPartnershipImage.image !== 'null'){
+          await this.fileService.deleteFile(oldPartnershipImage.image)
+        }
         image_name = await this.fileService.createFile(image);
       } catch (error) {
         throw new BadRequestException(error.message);

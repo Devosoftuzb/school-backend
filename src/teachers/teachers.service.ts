@@ -50,7 +50,10 @@ export class TeachersService {
   async delOneTeacher(id: number) {
     let teacher = await this.teacherRepo.findOne({ where: { id } });
     await this.teacherRepo.destroy({ where: { id } });
-    await this.fileService.deleteFile(teacher.image)
+
+    if (teacher.image !== 'null') {
+      await this.fileService.deleteFile(teacher.image);
+    }
     return {
       message: "O'qituvchi o'chirildi",
     };
@@ -65,7 +68,9 @@ export class TeachersService {
       let image_name: string;
       let oldTeacherImage = await this.teacherRepo.findOne({ where: { id } });
       try {
-        await this.fileService.deleteFile(oldTeacherImage.image)
+        if (oldTeacherImage.image !== 'null') {
+          await this.fileService.deleteFile(oldTeacherImage.image);
+        }
         image_name = await this.fileService.createFile(image);
       } catch (error) {
         throw new BadRequestException(error.message);

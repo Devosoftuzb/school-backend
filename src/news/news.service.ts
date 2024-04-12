@@ -50,7 +50,9 @@ export class NewsService {
   async delOneNew(id: number) {
     let news = await this.newRepo.findOne({ where: { id } });
     await this.newRepo.destroy({ where: { id } });
-    await this.fileService.deleteFile(news.image)
+    if (news.image !== 'null'){
+      await this.fileService.deleteFile(news.image)
+    }
     return {
       message: "Yangilik o'chirildi",
     };
@@ -65,7 +67,9 @@ export class NewsService {
       let image_name: string;
       let oldNewImage = await this.newRepo.findOne({ where: { id } });
       try {
-        await this.fileService.deleteFile(oldNewImage.image)
+        if (oldNewImage.image !== 'null'){
+          await this.fileService.deleteFile(oldNewImage.image)
+        }
         image_name = await this.fileService.createFile(image);
       } catch (error) {
         throw new BadRequestException(error.message);

@@ -50,7 +50,9 @@ export class AdditionalLessonsService {
   async delOneLesson(id: number) {
     let lesson = await this.lessonRepo.findOne({ where: { id } });
     this.lessonRepo.destroy({ where: { id } });
-    await this.fileService.deleteFile(lesson.image);
+    if (lesson.image !== 'null'){
+      await this.fileService.deleteFile(lesson.image);
+    }
     return {
       message: "To'garak o'chirildi",
     };
@@ -61,7 +63,9 @@ export class AdditionalLessonsService {
       let image_name: string;
       let oldLessonImage = await this.lessonRepo.findOne({ where: { id } });
       try {
-        await this.fileService.deleteFile(oldLessonImage.image);
+        if (oldLessonImage.image !== 'null'){
+          await this.fileService.deleteFile(oldLessonImage.image);
+        }
         image_name = await this.fileService.createFile(image);
       } catch (error) {
         throw new BadRequestException(error.message);
