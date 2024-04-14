@@ -12,6 +12,9 @@ export class CreateTeacherDto {
     @IsNotEmpty()
     profession: string;
 
+    @ApiProperty({example: "Rasim", description: "O'qituvchi rasmi"})
+    image: any;
+
     @ApiProperty({example: "info", description: "O'qituvchi ma'lumoti"})
     @IsNotEmpty()
     info: string;

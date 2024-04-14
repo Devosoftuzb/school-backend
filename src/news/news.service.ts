@@ -68,7 +68,7 @@ export class NewsService {
       let oldNewImage = await this.newRepo.findOne({ where: { id } });
       try {
         if (oldNewImage.image !== 'null'){
-          await this.fileService.deleteFile(oldNewImage.image)
+          await this.fileService.deleteFile(oldNewImage.image)            
         }
         image_name = await this.fileService.createFile(image);
       } catch (error) {

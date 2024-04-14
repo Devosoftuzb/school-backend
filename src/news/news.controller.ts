@@ -20,17 +20,6 @@ export class NewsController {
   @Roles("ADMIN")
   @UseGuards(RolesGuard)
   @ApiConsumes('multipart/form-data')
-  @ApiBody({
-    schema: {
-      type: 'object',
-      properties: {
-        image: {
-          type: 'string',
-          format: 'binary',
-        },
-      },
-    },
-  })
   @Post('/create')
   @UseInterceptors(FileInterceptor('image'))
   async create(
@@ -64,17 +53,6 @@ export class NewsController {
   @Roles("ADMIN")
   @UseGuards(RolesGuard)
   @ApiConsumes('multipart/form-data')
-  @ApiBody({
-    schema: {
-      type: 'object',
-      properties: {
-        image: {
-          type: 'string',
-          format: 'binary',
-        },
-      },
-    },
-  })
   @Put('update/:id')
   @UseInterceptors(FileInterceptor('image'))
   async updateNew(

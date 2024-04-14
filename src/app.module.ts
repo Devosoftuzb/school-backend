@@ -34,7 +34,7 @@ import { Contact } from './contact/models/contact.model';
       logging: false,
     }),
     ServeStaticModule.forRoot({
-      rootPath: resolve(__dirname, 'static'),
+      rootPath: resolve(__dirname, '..', 'uploads'),
     }),
     AdminsModule,
     TeachersModule,

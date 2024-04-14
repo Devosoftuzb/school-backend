@@ -7,6 +7,9 @@ export class CreateNewDto {
     @IsNotEmpty()
     title: string;
 
+    @ApiProperty({example: "Rasim", description: "Yangilik rasmi"})
+    image: any;
+
     @ApiProperty({example: "Body", description: "Yangilik body"})
     @IsString()
     @IsNotEmpty()

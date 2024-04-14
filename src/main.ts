@@ -22,6 +22,7 @@ const start = async () => {
                     `${req.method} ${req.originalUrl} ${res.statusCode}, ${responseTime}ms`,
                 );
             });
+            
             next();
         })
 
